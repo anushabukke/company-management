@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ActivityLogResource\Pages;
 use App\Models\ActivityLog;
 use App\Models\Company;
+use App\Models\Contact;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,11 +41,33 @@ class ActivityLogResource extends Resource
                 TextColumn::make('id')->label('ID')->sortable()->searchable(),
                 // TextColumn::make('log_name')->label('Log Name')->sortable()->searchable(),
                 TextColumn::make('description')->label('Description')->sortable()->searchable(),
-                // TextColumn::make('subject_type')->label('Subject Type')->sortable()->searchable(),
+                TextColumn::make('subject_type')->label('Subject Type')->sortable()->searchable(),
                 TextColumn::make('event')->label('Event')->sortable()->searchable(),
                 // TextColumn::make('subject_id')->label('Subject ID')->sortable()->searchable(),
                 // TextColumn::make('causer_type')->label('Causer Type')->sortable()->searchable(),
-                TextColumn::make('company.name')->label('Company Name')->sortable()->searchable(),
+
+                TextColumn::make('subject_id')
+                    ->label('Subject Name')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->subject_type === 'App\\Models\\Company') {
+                            return $record->company->name;
+                        } elseif ($record->subject_type === 'App\\Models\\Contact') {
+                            return $record->contact->name;
+                        }
+                        return null;
+                    })
+                    ->tooltip(function ($record) {
+                        if ($record->subject_type === 'App\\Models\\Company') {
+                            return $record->company->name;
+                        } elseif ($record->subject_type === 'App\\Models\\Contact') {
+                            return $record->contact->name;
+                        }
+                        return null;
+                    })
+                    ->extraAttributes(['style' => 'max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;']),
+
                 TextColumn::make('causer.name')->label('Causer Name')->sortable()->searchable(),
                 TextColumn::make('Field')->label('Field'),
                 TextColumn::make('Old')->label('Old'),
@@ -52,14 +76,33 @@ class ActivityLogResource extends Resource
                 TextColumn::make('updated_at')->label('Updated At')->dateTime()->sortable()->searchable(),
                 TextColumn::make('created_at')->label('Created At')->dateTime()->sortable()->searchable(),
             ])
-            // ->tabs(static::getTabs())
+
             ->filters([
                 SelectFilter::make('causer_id')
                     ->options(static::getCauserNames())
                     ->label('Causer Name'),
-                SelectFilter::make('subject_id')
+
+                SelectFilter::make('company_id')
                     ->options(static::getCompanyNames())
-                    ->label('Company Name'), Filter::make('date_range')
+                    ->label('Company Name')
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['value'], function ($query, $value) {
+                            $query->where('subject_type', Company::class)
+                                ->where('subject_id', $value);
+                        });
+                    }),
+
+                SelectFilter::make('contact_id')
+                    ->options(static::getContactNames())
+                    ->label('Contact Name')
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['value'], function ($query, $value) {
+                            $query->where('subject_type', Contact::class)
+                                ->where('subject_id', $value);
+                        });
+                    }),
+
+                Filter::make('date_range')
                     ->label('Date Range')
                     ->form([
                         Forms\Components\DatePicker::make('from')->label('From'),
@@ -108,5 +151,10 @@ class ActivityLogResource extends Resource
     {
 
         return Company::pluck('name', 'id')->prepend('Any', '')->toArray();
+    }
+    protected static function getContactNames(): array
+    {
+
+        return Contact::pluck('name', 'id')->prepend('Any', '')->toArray();
     }
 }

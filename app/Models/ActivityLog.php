@@ -71,12 +71,21 @@ class ActivityLog extends Model
         return 'N/A';
     }
 
+    // Relationship to Causer (User)
     public function causer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'causer_id');
     }
+
+    // Relationship to Company (if subject_type is Company)
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'subject_id');
+    }
+
+    // Relationship to Contact (if subject_type is Contact)
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class, 'subject_id');
     }
 }

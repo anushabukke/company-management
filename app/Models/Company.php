@@ -12,7 +12,18 @@ class Company extends Model
     use HasFactory, LogsActivity;
 
 
-    protected static $logAttributes = ['name', 'entity_no', 'status'];
+    protected static $logAttributes = [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'entity_no',
+        'date_of_incorporation',
+        'entity_no_and_name',
+        'jurisdiction_id',
+        'status',
+    ];
 
 
     protected static $logName = 'company';
@@ -21,7 +32,6 @@ class Company extends Model
         'address',
         'phone',
         'email',
-        'entity_no',
         'entity_no',
         'date_of_incorporation',
         'entity_no_and_name',
@@ -37,7 +47,18 @@ class Company extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'entity_no', 'status'])
+            ->logOnly([
+                'id',
+                'name',
+                'address',
+                'phone',
+                'email',
+                'entity_no',
+                'date_of_incorporation',
+                'entity_no_and_name',
+                'jurisdiction_id',
+                'status',
+            ])
             ->logOnlyDirty()
             ->useLogName('company');
     }

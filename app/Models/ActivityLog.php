@@ -30,7 +30,7 @@ class ActivityLog extends Model
         'created_at',
         'updated_at',
     ];
-
+    //to extract data from json "properties" field
     public function getFieldAttribute()
     {
         $properties = $this->properties ?? [];

@@ -7,8 +7,10 @@ use App\Models\ActivityLog;
 use App\Models\Company;
 use App\Models\Contact;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -71,7 +73,8 @@ class ActivityLogResource extends Resource
                 TextColumn::make('causer.name')->label('Causer Name')->sortable()->searchable(),
                 TextColumn::make('Field')->label('Field'),
                 TextColumn::make('Old')->label('Old'),
-                TextColumn::make('New')->label('New'),
+                TextColumn::make('New')->label('New')
+                    ->extraAttributes(['style' => 'max-width: 180px; white-space: wrap; overflow: hidden; text-overflow: ellipsis;']),
                 // TextColumn::make('batch_uuid')->label('Batch UUID')->sortable()->searchable(),
                 TextColumn::make('updated_at')->label('Updated At')->dateTime()->sortable()->searchable(),
                 TextColumn::make('created_at')->label('Created At')->dateTime()->sortable()->searchable(),

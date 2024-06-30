@@ -45,7 +45,11 @@ class CompanyResource extends Resource
                     ->extraAttributes(['style' => 'max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;']),
                 TextColumn::make('entity_no_and_name')->label('Entity No and Name')->searchable(),
                 TextColumn::make('jurisdiction_id')->label('Jurisdiction ID')->searchable(),
-                TextColumn::make('status')->label('Status')->searchable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->searchable()
+                    ->tooltip(fn ($record) => $record->name)
+                    ->extraAttributes(['style' => 'max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;']),
             ])
             ->filters([
                 //

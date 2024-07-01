@@ -17,9 +17,9 @@ class ListActivityLogs extends ListRecords
     {
         return [
             'all' => Tab::make('All')
-
                 ->modifyQueryUsing(fn (Builder $query) => $query),
             'this_week' => Tab::make('This Week')
+                ->icon('heroicon-s-calendar-days')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where(function ($query) {
                     $startOfWeek = Carbon::now()->startOfWeek();
                     $endOfWeek = Carbon::now()->endOfWeek();
@@ -27,6 +27,7 @@ class ListActivityLogs extends ListRecords
                         ->orWhereBetween('created_at', [$startOfWeek, $endOfWeek]);
                 })),
             'this_month' => Tab::make('This Month')
+                ->icon('heroicon-s-calendar-days')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where(function ($query) {
                     $startOfMonth = Carbon::now()->startOfMonth();
                     $endOfMonth = Carbon::now()->endOfMonth();
@@ -34,6 +35,7 @@ class ListActivityLogs extends ListRecords
                         ->orWhereBetween('created_at', [$startOfMonth, $endOfMonth]);
                 })),
             'this_year' => Tab::make('This Year')
+                ->icon('heroicon-s-calendar-days')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where(function ($query) {
                     $startOfYear = Carbon::now()->startOfYear();
                     $endOfYear = Carbon::now()->endOfYear();
